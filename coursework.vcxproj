@@ -131,12 +131,10 @@
     <ClCompile Include="coursework.cpp" />
     <ClCompile Include="Float.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Object_basic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Float.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="Object_basic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

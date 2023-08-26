@@ -1,5 +1,6 @@
 #include "Float.h"
 #include <fstream>
+#include <stdio.h>
 
 void Float::initialize()
 {
@@ -7,15 +8,17 @@ void Float::initialize()
 	typeIdentifier = 0;
 }
 
-void Float::serialize(char* str)
+char* Float::to_cstring() const
 {
-	sprintf(str, "%f", getValue());
+	char* str = new char[STRING_REPRESENTATION_SYMBOLS_NUMBER];
+	sprintf_s(str, STRING_REPRESENTATION_SYMBOLS_NUMBER,"%f", getValue());
+	return str;
 }
 
-void Float::deserialize(const char* str)
+void Float::from_cstring(const char* str)
 {
 	float value;
-	if (sscanf(str, "%f", &value) != 0) {
+	if (sscanf_s(str, "%f", &value) != 0) {
 		setContainerValue(value);
 	}
 	else {
@@ -24,43 +27,32 @@ void Float::deserialize(const char* str)
 
 }
 
-void Float::writeBinary(std::ofstream os)
+void Float::writeBinary(std::ofstream& os) const
 {
-	char* buffer = (char*)malloc(sizeof(float));
-	serialize(buffer);
 	float s = getValue();
 	os.write((char*)&s, sizeof(float));
-	free(buffer);
+	os.flush();
 }
 
-void Float::readBinary(std::ifstream is)
+void Float::readBinary(std::ifstream& is)
 {
-	float readingValue;
-	char* buffer = (char*)malloc(sizeof(float));
-	if (buffer == nullptr) throw "Memory allocation error";
-	is.read(buffer, sizeof(float));
-	if (sscanf(buffer, "%f", &readingValue) != 0) {
-		setContainerValue(readingValue);
-	}
-	else {
-		throw "Error while reading the value";
-	}
-	free(buffer);
-	
+	float readingValue = 0;
+	is.read((char*)&readingValue, sizeof(float));
+	setContainerValue(readingValue);
 }
 
-Object* Float::getCopy()
+Object* Float::getCopy() const
 {
 	return new Float(*this);
 }
 
-bool Float::operator==(Object& other)
+bool Float::operator==(Object& other) const
 {
 	return ((*this <=> other) == 0);
 }
 
 
-bool Float::operator==(Float& other)
+bool Float::operator==(Float& other) const
 {
 	return ((*this <=> other) == 0);
 }
@@ -72,12 +64,12 @@ Float& Float::operator=(const float& value)
 }
 
 
-std::partial_ordering Float::operator<=>(Float& other)
+std::partial_ordering Float::operator<=>(Float& other) const
 {
 	return (getValue() <=> other.getValue());
 }
 
-std::partial_ordering Float::operator<=>(Object& other)
+std::partial_ordering Float::operator<=>(Object& other) const
 {
 
 	if (typeIdentifier != other.identifier()) return std::partial_ordering::unordered;
@@ -87,7 +79,7 @@ std::partial_ordering Float::operator<=>(Object& other)
 }
 
 
-float Float::convertContainer(void* value)
+float Float::convertContainer(void* value) const
 {
 	return *static_cast<float*>(value);
 }
@@ -115,7 +107,20 @@ Float& Float::operator=(Float&& other)
 	return *this;
 }
 
-float Float::getValue()
+float Float::getValue() const
 {
 	return convertContainer(Object::getValue());
+}
+
+std::ostream& operator<<(std::ostream& os, const Float& obj)
+{
+		return os << obj.getValue();
+}
+
+std::istream& operator>>(std::istream& is, Float& obj)
+{
+	float value;
+	is >> value;
+	if (std::cin.good()) obj.setContainerValue(value);
+	return is;
 }

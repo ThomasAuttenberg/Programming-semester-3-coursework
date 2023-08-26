@@ -49,11 +49,11 @@ public:
 
 	Object& operator=(Object&& other);
 
-	void* getValue();
+	void* getValue() const;
 
-	int identifier();
+	int identifier() const;
 
-	const char* typeName();
+	const char* typeName() const;
 
 	virtual ~Object();
 
@@ -66,18 +66,18 @@ public:
 
 	virtual void initialize() = 0;
 
-	virtual void serialize(char*) = 0;
+	virtual char* to_cstring() const = 0;
 
-	virtual void deserialize(const char*) = 0;
+	virtual void from_cstring(const char*) = 0;
 
-	virtual void writeBinary(std::ofstream) = 0;
+	virtual void writeBinary(std::ofstream&) const = 0;
 
-	virtual void readBinary(std::ifstream) = 0;
+	virtual void readBinary(std::ifstream&) = 0;
 
-	virtual Object* getCopy() = 0;
+	virtual Object* getCopy() const = 0;
 
-	virtual std::partial_ordering operator<=>(Object& other) = 0;
+	virtual std::partial_ordering operator<=>(Object& other) const = 0;
 	
-	virtual bool operator==(Object& other) = 0;
+	virtual bool operator==(Object& other) const = 0;
 
 };

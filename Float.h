@@ -1,13 +1,15 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
 #include "Object.h"
-#include <iostream>
+
 
 class Float : private Object
 {
 private:
 
-	float convertContainer(void* value);
+	static const int STRING_REPRESENTATION_SYMBOLS_NUMBER = 20;
+
+	float convertContainer(void* value) const;
+	friend std::istream& operator>>(std::istream& is, Float& obj);
 
 public:
 
@@ -17,20 +19,22 @@ public:
 	Float(Float&& value);
 	Float& operator=(const Float& other);
 	Float& operator=(Float&& other);
-	float getValue();
+	float getValue() const;
 
 	void initialize() override;
-	void serialize(char*) override;
-	void deserialize(const char*) override;
-	void writeBinary(std::ofstream) override;
-	void readBinary(std::ifstream) override;
-	Object* getCopy() override;
+	char* to_cstring() const override;
+	void from_cstring(const char*) override;
+	void writeBinary(std::ofstream&) const override;
+	void readBinary(std::ifstream&) override;
+	Object* getCopy() const override;
 
-	std::partial_ordering operator<=>(Object& other) override;
-	bool operator==(Object& other) override;
+	std::partial_ordering operator<=>(Object& other) const override;
+	bool operator==(Object& other) const override;
 
-	std::partial_ordering operator<=>(Float& other);
-	bool operator==(Float& other);
+	std::partial_ordering operator<=>(Float& other) const;
+	bool operator==(Float& other) const;
 
 	Float& operator=(const float& value);
 };
+
+std::ostream& operator<<(std::ostream& os, const Float& obj);

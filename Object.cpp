@@ -58,16 +58,16 @@ Object& Object::operator=(Object&& other) {
 }
 
 
-void* Object::getValue() {
+void* Object::getValue() const {
 	return container;
 }
 
-int Object::identifier()
+int Object::identifier() const
 {
 	return typeIdentifier;
 }
 
-const char* Object::typeName()
+const char* Object::typeName() const
 {
 	return _typeName;
 }

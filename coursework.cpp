@@ -5,22 +5,16 @@
 
 #include <vector>
 #include "Float.h"
+#include <fstream>
 
 int main()
 {
-	
+	std::ifstream is;
+	is.open("meow");
+	Float c(12.5);
+	c.readBinary(is);
+	Object* k = c.getCopy();
 
-	while (1) {
-		Float a(12.5);
-		Float b(13.5);
-		Float c(143.5);
-		Float d(a);
-		Float e(std::move(a));
-		Float f(12);
-		f = b;
-		d = std::move(c);
-		b = 35.6;
-	}
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

@@ -34,7 +34,14 @@ public:
 	std::partial_ordering operator<=>(Float& other) const;
 	bool operator==(Float& other) const;
 
+	void operator+=(const Object& other) override;
 	Float& operator=(const float& value);
+	Float operator+(const Float& other);
+	Float operator-(const Float& other);
+	Float operator*(const Float& other);
+	Float operator/(const Float& other);
+	Float operator+();
+	Float operator-();
 };
 
 std::ostream& operator<<(std::ostream& os, const Float& obj);

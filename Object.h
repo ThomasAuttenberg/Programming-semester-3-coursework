@@ -77,6 +77,8 @@ public:
 	virtual Object* getCopy() const = 0;
 
 	virtual std::partial_ordering operator<=>(Object& other) const = 0;
+
+	virtual void operator+=(const Object& other) = 0;
 	
 	virtual bool operator==(Object& other) const = 0;
 

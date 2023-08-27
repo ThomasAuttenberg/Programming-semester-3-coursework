@@ -6,14 +6,18 @@
 #include <vector>
 #include "Float.h"
 #include <fstream>
+#include <string>
 
 int main()
 {
 	std::ifstream is;
 	is.open("meow");
 	Float c(12.5);
-	c.readBinary(is);
-	Object* k = c.getCopy();
+	char* str = c.to_cstring();
+	str[3] = '2';
+	Float k;
+	k.from_cstring(str);
+	std::cout << k;
 
 }
 

@@ -10,8 +10,11 @@ void Float::initialize()
 
 char* Float::to_cstring() const
 {
-	char* str = new char[STRING_REPRESENTATION_SYMBOLS_NUMBER];
-	sprintf_s(str, STRING_REPRESENTATION_SYMBOLS_NUMBER,"%f", getValue());
+	float value = getValue();
+	auto length = _scprintf("%f", value);
+
+	char* str = new char[length + 1];
+	sprintf_s(str, length+1,"%f", value);
 	return str;
 }
 
@@ -57,10 +60,47 @@ bool Float::operator==(Float& other) const
 	return ((*this <=> other) == 0);
 }
 
+void Float::operator+=(const Object& other)
+{
+	if (other.identifier() == identifier()) {
+		setContainerValue(convertContainer(other.getValue()) + getValue());
+	}
+}
+
 Float& Float::operator=(const float& value)
 {
 	setContainerValue(value);
 	return *this;
+}
+
+Float Float::operator+(const Float& other)
+{
+	return Float(other.getValue() + getValue());
+}
+
+Float Float::operator-(const Float& other)
+{
+	return Float(getValue() - other.getValue());
+}
+
+Float Float::operator*(const Float& other)
+{
+	return Float(other.getValue()*getValue());
+}
+
+Float Float::operator/(const Float& other)
+{
+	return Float(getValue() / other.getValue());
+}
+
+Float Float::operator+()
+{
+	return *this;
+}
+
+Float Float::operator-()
+{
+	return Float(-getValue());
 }
 
 

@@ -73,32 +73,32 @@ Float& Float::operator=(const float& value)
 	return *this;
 }
 
-Float Float::operator+(const Float& other)
+Float Float::operator+(const Float& other) const
 {
 	return Float(other.getValue() + getValue());
 }
-
-Float Float::operator-(const Float& other)
+ 
+Float Float::operator-(const Float& other) const
 {
 	return Float(getValue() - other.getValue());
 }
 
-Float Float::operator*(const Float& other)
+Float Float::operator*(const Float& other) const
 {
 	return Float(other.getValue()*getValue());
 }
 
-Float Float::operator/(const Float& other)
+Float Float::operator/(const Float& other) const
 {
 	return Float(getValue() / other.getValue());
 }
 
-Float Float::operator+()
+Float Float::operator+() const
 {
 	return *this;
 }
 
-Float Float::operator-()
+Float Float::operator-() const
 {
 	return Float(-getValue());
 }

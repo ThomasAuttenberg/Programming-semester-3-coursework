@@ -6,8 +6,6 @@ class Float : private Object
 {
 private:
 
-	static const int STRING_REPRESENTATION_SYMBOLS_NUMBER = 20;
-
 	float convertContainer(void* value) const;
 	friend std::istream& operator>>(std::istream& is, Float& obj);
 
@@ -36,12 +34,12 @@ public:
 
 	void operator+=(const Object& other) override;
 	Float& operator=(const float& value);
-	Float operator+(const Float& other);
-	Float operator-(const Float& other);
-	Float operator*(const Float& other);
-	Float operator/(const Float& other);
-	Float operator+();
-	Float operator-();
+	Float operator+(const Float& other) const;
+	Float operator-(const Float& other) const;
+	Float operator*(const Float& other) const;
+	Float operator/(const Float& other) const;
+	Float operator+() const;
+	Float operator-() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Float& obj);

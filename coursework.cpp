@@ -4,20 +4,26 @@
 #include <iostream>
 
 #include <vector>
-#include "Float.h"
+#include "Primitive.h"
 #include <fstream>
 #include <string>
+#include <typeinfo>
+#include <sstream>
 
 int main()
 {
+
 	std::ifstream is;
 	is.open("meow");
 	Float c(12.5);
+	Float* s = new Float[25];
 	char* str = c.to_cstring();
 	str[3] = '2';
 	Float k;
 	k.from_cstring(str);
-	std::cout << k;
+	std::string sss;
+	k += c;
+	std::cout << (k < c);
 
 }
 

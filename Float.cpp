@@ -67,6 +67,11 @@ void Float::operator+=(const Object& other)
 	}
 }
 
+void Float::operator+=(const Float& other)
+{
+	setContainerValue(getValue() + other.getValue());
+}
+
 Float& Float::operator=(const float& value)
 {
 	setContainerValue(value);
@@ -76,6 +81,12 @@ Float& Float::operator=(const float& value)
 Float Float::operator+(const Float& other) const
 {
 	return Float(other.getValue() + getValue());
+}
+
+Object& Float::operator+(const Object& other) const
+{
+	if (this->typeIdentifier != other.identifier()) return *(Object*)this;
+	return *(new Float(getValue() + convertContainer(other.getValue())));
 }
  
 Float Float::operator-(const Float& other) const
@@ -103,13 +114,19 @@ Float Float::operator-() const
 	return Float(-getValue());
 }
 
+Float::operator Object& ()
+{
+	return (Object&)(*this);
+}
 
-std::partial_ordering Float::operator<=>(Float& other) const
+
+
+std::partial_ordering Float::operator<=>(const Float& other) const
 {
 	return (getValue() <=> other.getValue());
 }
 
-std::partial_ordering Float::operator<=>(Object& other) const
+std::partial_ordering Float::operator<=>(const Object& other) const
 {
 
 	if (typeIdentifier != other.identifier()) return std::partial_ordering::unordered;

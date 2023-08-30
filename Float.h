@@ -26,20 +26,24 @@ public:
 	void readBinary(std::ifstream&) override;
 	Object* getCopy() const override;
 
-	std::partial_ordering operator<=>(Object& other) const override;
+	std::partial_ordering operator<=>(const Object& other) const override;
 	bool operator==(Object& other) const override;
 
-	std::partial_ordering operator<=>(Float& other) const;
+	std::partial_ordering operator<=>(const Float& other) const;
 	bool operator==(Float& other) const;
 
 	void operator+=(const Object& other) override;
+	void operator+=(const Float& other);
 	Float& operator=(const float& value);
 	Float operator+(const Float& other) const;
+	Object& operator+(const Object& other) const override;
 	Float operator-(const Float& other) const;
 	Float operator*(const Float& other) const;
 	Float operator/(const Float& other) const;
 	Float operator+() const;
 	Float operator-() const;
+
+	explicit operator Object&();
 };
 
 std::ostream& operator<<(std::ostream& os, const Float& obj);

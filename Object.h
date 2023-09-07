@@ -14,15 +14,15 @@
 	by inserting correct defined initialize() function in every constructor.
 	* use Object constructors instead of creating derived class own value-saving logic
 		example: Int(int value) : Object(value){initialize()};
-				 Int(const Int& other) : Object((Object&)other){initialize()};
+				 Int(const Int& other) : Object(other){initialize()};
 
 */
 
 // Following templates specification: 
-// " template members of Object can be used only if T - isn't an Object and can be copyied using constructor "
+// " template members of Object can be used only if T - isn't an Object & array and can be copyied using constructor "
 class Object;
 template <typename T>
-concept copyable = std::is_copy_constructible<T>::value == true && !(std::is_same<T, Object>::value);
+concept copyable = std::is_copy_constructible<T>::value == true && !(std::is_same<T, Object>::value) && std::is_array<T>::value == false;
 
 class Object
 {
@@ -35,7 +35,7 @@ private:
 
 protected:
 	
-	int typeIdentifier;
+	size_t typeIdentifier;
 	const char* _typeName;
 
 	// setter function template uses to copy any copyable value other then Object into container memory
@@ -91,13 +91,8 @@ public:
 
 	virtual Object* getCopy() const = 0; // Uses to return pointer to a new derived class examplar - copy of initial.
 
-	virtual std::partial_ordering operator<=>(const Object& other) const = 0; // "Space ship" operator - basic operator uses to comparing Objects (C++20)
+	virtual std::partial_ordering compare(const Object& other) const = 0; // Objects comparing
 
-	virtual Object& operator+(const Object& other) const = 0; // Objects combination(addition)
-
-	virtual void operator+=(const Object& other) = 0; 
-	
-	virtual bool operator==(Object& other) const = 0; // Another basic comparing operator
-
+	virtual void add(const Object& other) = 0; //Objects combination (addition).
 
 };

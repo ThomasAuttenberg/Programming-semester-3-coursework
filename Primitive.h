@@ -17,7 +17,6 @@ class Primitive :
 private:
 
 	T convertContainer(void* value) const;
-	friend std::istream& operator>>(std::istream& is, Primitive& obj);
 
 public:
 
@@ -35,24 +34,10 @@ public:
 	void writeBinary(std::ofstream&) const override;
 	void readBinary(std::ifstream&) override;
 	Object* getCopy() const override;
+	std::partial_ordering compare(const Object& other) const; 
+	void add(const Object& other); 
 
-	std::partial_ordering operator<=>(const Object& other) const override;
-	bool operator==(Object& other) const override;
-
-	std::partial_ordering operator<=>(const Primitive<T>& other) const;
-	bool operator==(Primitive<T>& other) const;
-
-	void operator+=(const Object& other) override;
-	Object& operator+(const Object& other) const override;
-	void operator+=(const Primitive<T>& other);
-	void operator-=(const Primitive<T>& other);
-	Primitive<T>& operator=(const T& value);
-	Primitive<T> operator+(const Primitive<T>& other) const;
-	Primitive<T> operator-(const Primitive<T>& other) const;
-	Primitive<T> operator*(const Primitive<T>& other) const;
-	Primitive<T> operator/(const Primitive<T>& other) const;
-	Primitive<T> operator+() const;
-	Primitive<T> operator-() const;
+	operator T&();
 
 };
 
@@ -91,7 +76,8 @@ inline Primitive<T>& Primitive<T>::operator=(const Primitive<T>& other)
 {
 	Object::operator=(other);
 	return *this;
-};
+}
+
 
 template<primitive T>
 inline Primitive<T>& Primitive<T>::operator=(Primitive<T>&& other)
@@ -109,8 +95,8 @@ inline T Primitive<T>::getValue() const
 template<primitive T>
 inline void Primitive<T>::initialize()
 {
-	_typeName = typeid(T).name();
-	typeIdentifier = typeid(T).hash_code();
+	_typeName = typeid(*this).name();
+	typeIdentifier = typeid(*this).hash_code();
 };
 
 template<primitive T>
@@ -157,117 +143,26 @@ inline Object* Primitive<T>::getCopy() const
 };
 
 template<primitive T>
-inline bool Primitive<T>::operator==(Object& other) const
+inline std::partial_ordering Primitive<T>::compare(const Object& other) const
 {
-	if (typeIdentifier != other.identifier()) return false;
-	T otherValue = convertContainer(other.getValue());
-	return (getValue() <=> otherValue) == 0;
+	if (typeIdentifier != other.identifier()) return std::partial_ordering::unordered;
+	return getValue() <=> convertContainer(other.getValue());
 };
 
 template<primitive T>
-inline bool Primitive<T>::operator==(Primitive<T>& other) const
-{
-	return getValue() <=> other.getValue() == 0;
-};
-
-template<primitive T>
-inline void Primitive<T>::operator+=(const Object& other)
+inline void Primitive<T>::add(const Object& other)
 {
 	if (typeIdentifier != other.identifier()) return;
 	setContainerValue(getValue() + convertContainer(other.getValue()));
-};
 
-
-template<primitive T>
-inline Object& Primitive<T>::operator+(const Object& other) const
-{
-	if (typeIdentifier != other.identifier()) return *((Object*)this);
-	Primitive<T> newObject(convertContainer(other.getValue()) + getValue());
-	return newObject;
 };
 
 template<primitive T>
-inline Primitive<T>& Primitive<T>::operator=(const T& value)
+inline Primitive<T>::operator T& ()
 {
-	setContainerValue(value);
-	return *this;
+	return *(T*)Object::getValue();
 };
 
-template<primitive T>
-inline Primitive<T> Primitive<T>::operator+(const Primitive<T>& other) const
-{
-	return Primitive<T>(other.getValue() + getValue());
-};
-
-template<primitive T>
-inline Primitive<T> Primitive<T>::operator-(const Primitive<T>& other) const
-{
-	return Primitive<T>(getValue() - other.getValue());
-};
-
-template<primitive T>
-inline Primitive<T> Primitive<T>::operator*(const Primitive<T>& other) const
-{
-	return Primitive<T>(getValue() * other.getValue());
-};
-
-template<primitive T>
-inline Primitive<T> Primitive<T>::operator/(const Primitive<T>& other) const
-{
-	return Primitive<T>(getValue() / other.getValue());
-};
-
-template<primitive T>
-inline void Primitive<T>::operator+=(const Primitive<T>& other)
-{
-	*this = *this + other;
-};
-
-template<primitive T>
-inline void Primitive<T>::operator-=(const Primitive<T>& other)
-{
-	*this = *this - other;
-};
-
-template<primitive T>
-inline Primitive<T> Primitive<T>::operator+() const
-{
-	return *this;
-};
-
-template<primitive T>
-inline Primitive<T> Primitive<T>::operator-() const
-{
-	return Primitive<T>(-getValue());
-}
-
-template<primitive T>
-inline std::partial_ordering Primitive<T>::operator<=>(const Primitive<T>& other) const
-{
-	return getValue() <=> other.getValue();
-};
-
-template<primitive T>
-inline std::partial_ordering Primitive<T>::operator<=>(const Object& other) const
-{
-	if (typeIdentifier != other.identifier()) return std::partial_ordering::unordered;
-	T otherValue = convertContainer(other.getValue());
-	return (getValue() <=> otherValue);
-};
-
-template <primitive T>
-std::ostream& operator<<(std::ostream& os, const Primitive<T>& obj) {
-	os << obj.getValue();
-	return os;
-};
-
-template <primitive T>
-std::istream& operator>>(std::istream& is, Primitive<T>& obj) {
-	T value;
-	is >> value;
-	obj.setContainerValue(value);
-	return is;
-};
 
 typedef Primitive<float> Float;
 typedef Primitive<int> Int;

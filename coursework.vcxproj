@@ -131,12 +131,11 @@
   <ItemGroup>
     <ClCompile Include="coursework.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="clist.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

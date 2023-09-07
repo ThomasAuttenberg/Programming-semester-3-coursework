@@ -9,22 +9,56 @@
 #include <string>
 #include <typeinfo>
 #include <sstream>
+#include <list>
+#include "clist.h"
 
 int main()
 {
 
+	float ca = 0;
+	ca++;
 	std::ifstream is;
+	void* n;
+	int sss = 0;
+	clist<float> s = { 12,3,4,5 };
+	clist<float>::iterator a = s.begin();
+	auto dd = a;
+	dd++;
+	dd++;
+	s.erase(a, dd);
+	
+	const std::list<int> sssss;
+	//std::list<int>::iterator = (sssss.begin());
+	//sssss.back() = 12;
+
+	s.foreach([&](clist<float>::elem value){
+		
+		value++;
+		sss += 1;
+
+	});
+	s.foreach([&](clist<float>::elem value) {
+
+		std::cout << value;
+
+	});
+	clist<float>::iterator z = s.begin();
+	clist<float>::iterator v = s.begin();
+	s.erase(s.begin() , s.begin());
+	std::function<void(const clist<int>::iterator)> h;
+	
+	/*//clist<int>::iterator k;
 	is.open("meow");
-	Float c(12.5);
-	Float* s = new Float[25];
-	char* str = c.to_cstring();
+	//Float c(12.5);
+	//Float* s = new Float[25];
+	//char* str = c.to_cstring();
 	str[3] = '2';
 	Float k;
+	Int csd;
 	k.from_cstring(str);
-	std::string sss;
-	k += c;
-	std::cout << (k < c);
-
+	std::string sss;;
+	std::cout << typeid(c).hash_code() << " " << typeid(csd).hash_code();
+	*/
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

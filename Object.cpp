@@ -75,3 +75,5 @@ const char* Object::typeName() const
 Object::~Object() {
 	if(destructor != nullptr) destructor(container);
 }
+
+

@@ -11,54 +11,49 @@
 #include <sstream>
 #include <list>
 #include "clist.h"
+#include "Menu.h"
 
 int main()
 {
-
 	float ca = 0;
 	ca++;
 	std::ifstream is;
 	void* n;
 	int sss = 0;
-	clist<float> s = { 12,3,4,5 };
-	clist<float>::iterator a = s.begin();
-	auto dd = a;
-	dd++;
-	dd++;
-	s.erase(a, dd);
-	
-	const std::list<int> sssss;
-	//std::list<int>::iterator = (sssss.begin());
-	//sssss.back() = 12;
-
-	s.foreach([&](clist<float>::elem value){
+	clist<float> list = { 13,12,5,3,5 };
+	list.foreach([](float s) {
 		
-		value++;
-		sss += 1;
-
+		
+		
 	});
-	s.foreach([&](clist<float>::elem value) {
 
-		std::cout << value;
-
+	Menu a("How are you today?");
+	Menu b([&]()-> void {
+		
+		list.foreach([](float s) {
+			std::cout << s << " ";
+			});
 	});
-	clist<float>::iterator z = s.begin();
-	clist<float>::iterator v = s.begin();
-	s.erase(s.begin() , s.begin());
-	std::function<void(const clist<int>::iterator)> h;
+	MenuItem a1("How's it",b);
+	a.addItem(a1);
+	MenuItem b1("Delete the last", [&]() {
+		list.pop_back();
+	});
+	b.addItem(b1);
 	
-	/*//clist<int>::iterator k;
-	is.open("meow");
+	/* 
+	//clist<int>::iterator k;
+	//is.open("meow");
 	//Float c(12.5);
 	//Float* s = new Float[25];
 	//char* str = c.to_cstring();
-	str[3] = '2';
-	Float k;
-	Int csd;
-	k.from_cstring(str);
-	std::string sss;;
-	std::cout << typeid(c).hash_code() << " " << typeid(csd).hash_code();
-	*/
+	//str[3] = '2';
+	//Float k;
+	//Int csd;
+	//k.from_cstring(str);
+	//std::string sss;;
+	//std::cout << typeid(c).hash_code() << " " << typeid(csd).hash_code();
+	//*/
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

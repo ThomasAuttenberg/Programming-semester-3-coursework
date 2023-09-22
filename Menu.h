@@ -1,13 +1,8 @@
 #pragma once
-#include <initializer_list>
-#include <functional>
+#include "ConsoleFrame.h"
+#include "clist.h"
 
-struct MenuItem {
-	const char* text;
-	Menu* ref;
-	MenuItem(const char* text, Menu& menu);
-};
-// меняем меню ластреф на меню в котором расположен менюайтем
+const char BACKWARD_BUTTON_TEXT[] = "BACK";
 
 // экшн можно унаследовать от меню, метод шоу сделать виртуальным и выполнять внутри метода шоу
 // экшна переданную ф-цию
@@ -19,20 +14,35 @@ class Action {
 
 class Menu
 {
-	Menu* lastRef;
-	const char* menuText;
+private:
+    friend struct Item;
+    clist<MenuItem> items;
+    const char* text  = nullptr;
+    std::function<void(void)> printingFunction = nullptr;
+    Menu* where_called_from = nullptr;
+    bool isInputMenu = false;
 
 public:
 
-	Menu(const char* text, std::initializer_list<MenuItem>);
-	Menu(const char* text, std::function<void(void)>);
-	void show();
-
+    struct Item {
+   
+        friend class Menu;
+        Menu* goToRef = nullptr;
+        Menu* location = nullptr;
+        std::function<void()> action = nullptr;
+        const char* label;
+    
+        Item(const char* label , Menu& goToRef);
+        Item(const char* label, std::function<void(void)> action);
+        void go();
+    };
+    
+    Menu(const char* text);
+    Menu(std::function<void(void)> printingFunction, bool isInputMenu = false);
+    void addItem(Item item);
+    void show();
 };
 
-/*
-
-Menu("Meow meow", add_b, remove);
-MenuItem add_b("add b", new InputWindow("Meow", "%d", )
+typedef Menu::Item MenuItem;
 
 */

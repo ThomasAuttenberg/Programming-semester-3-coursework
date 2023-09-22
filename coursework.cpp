@@ -24,9 +24,8 @@ int main()
 	list.foreach([](float s) {
 		
 		
-
-		s.foreach([&](clist<float>::elem value) {
-			})
+		
+	});
 
 	Menu a("How are you today?");
 	Menu b([&]()-> void {

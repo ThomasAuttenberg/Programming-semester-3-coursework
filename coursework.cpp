@@ -15,6 +15,8 @@
 int main()
 {
 
+	//menu: 
+
 	float ca = 0;
 	ca++;
 	std::ifstream is;
@@ -28,8 +30,6 @@ int main()
 	s.erase(a, dd);
 	
 	const std::list<int> sssss;
-	//std::list<int>::iterator = (sssss.begin());
-	//sssss.back() = 12;
 
 	s.foreach([&](clist<float>::elem value){
 		

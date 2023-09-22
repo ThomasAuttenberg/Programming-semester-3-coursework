@@ -130,10 +130,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="coursework.cpp" />
+    <ClCompile Include="InputWindow.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clist.h" />
+    <ClInclude Include="InputWindow.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Object.h" />
   </ItemGroup>

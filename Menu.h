@@ -2,18 +2,23 @@
 #include "ConsoleFrame.h"
 #include "clist.h"
 
-const char BACKWARD_BUTTON_TEXT[] = "BACK";
+const char BACKWARD_BUTTON_TEXT[] = "<- Back";
+const int ITEM_LABEL_MAX_LENGTH = 50;
 
 class Menu
 {
+public:
+    struct Item;
 private:
     friend struct Item;
-    clist<MenuItem> items;
+    clist<Menu::Item> items;
+    bool backButtonSetted = false;
     const char* text  = nullptr;
     std::function<void(void)> printingFunction = nullptr;
     Menu* where_called_from = nullptr;
     bool isInputMenu = false;
-
+    void printButtons(clist<Menu::Item>::iterator&);
+    char getch();
 public:
 
     struct Item {
@@ -24,8 +29,10 @@ public:
         std::function<void()> action = nullptr;
         const char* label;
     
+        Item() = default;
         Item(const char* label , Menu& goToRef);
         Item(const char* label, std::function<void(void)> action);
+        Item(const Item& other);
         void go();
     };
     

@@ -15,11 +15,16 @@
 
 int main()
 {
+	system("chcp 1251");
+	system("cls");
+
 	float ca = 0;
 	ca++;
 	std::ifstream is;
 	void* n;
 	int sss = 0;
+	std::list<float> lis;
+	//lis.pop_back();
 	clist<float> list = { 13,12,5,3,5 };
 	list.foreach([](float s) {
 		
@@ -33,6 +38,7 @@ int main()
 		list.foreach([](float s) {
 			std::cout << s << " ";
 			});
+		std::cout << "\n";
 	});
 	MenuItem a1("How's it",b);
 	a.addItem(a1);
@@ -40,6 +46,7 @@ int main()
 		list.pop_back();
 	});
 	b.addItem(b1);
+	a.show();
 	
 	/* 
 	//clist<int>::iterator k;

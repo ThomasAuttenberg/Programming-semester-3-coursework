@@ -10,6 +10,9 @@ private:
 		Node* next;
 		Node* prev;
 		T value;
+		Node(T value) {
+			this->value = value;
+		}
 	};
 	
 	Node* first = nullptr;
@@ -168,8 +171,8 @@ inline clist<T>& clist<T>::operator=(clist<T>&& other)
 template<typename T>
 inline void clist<T>::push_back(T value)
 {
-	Node* newNode = new Node();
-	newNode->value = value;
+	Node* newNode = new Node(value);
+	//newNode->value = value;
 	if (empty()) {
 		newNode->next = newNode;
 		newNode->prev = newNode;
@@ -289,7 +292,7 @@ template<typename T>
 inline void clist<T>::pop_back()
 {
 	if (empty()) throw std::logic_error("pop_back called on empty list");
-	erase(begin());
+	erase(--begin());
 }
 
 template<typename T>

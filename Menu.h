@@ -5,11 +5,25 @@
 const char BACKWARD_BUTTON_TEXT[] = "<- Back";
 const int ITEM_LABEL_MAX_LENGTH = 50;
 
+class Menu;
+
+class Console {
+    static Menu* currentMenu;
+    Console() = default;
+    static char getch();
+public:
+    static Console& console();
+    static void setMenu(Menu*);
+    static void show();    
+};
+
 class Menu
 {
 public:
     struct Item;
+    static Console console;
 private:
+    friend class Console;
     friend struct Item;
     clist<Menu::Item> items;
     bool backButtonSetted = false;
@@ -18,7 +32,6 @@ private:
     Menu* where_called_from = nullptr;
     bool isInputMenu = false;
     void printButtons(clist<Menu::Item>::iterator&);
-    char getch();
 public:
 
     struct Item {
@@ -38,8 +51,9 @@ public:
     
     Menu(const char* text);
     Menu(std::function<void(void)> printingFunction, bool isInputMenu = false);
+    Menu(const Menu& other) = default;
     void addItem(Item item);
-    void show();
+    //void show();
 };
 
 typedef Menu::Item MenuItem;

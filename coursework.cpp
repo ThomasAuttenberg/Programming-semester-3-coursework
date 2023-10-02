@@ -24,7 +24,8 @@ int main()
 	void* n;
 	int sss = 0;
 	std::list<float> lis;
-	//lis.pop_back();
+
+
 	clist<float> list = { 13,12,5,3,5 };
 	list.foreach([](float s) {
 		
@@ -46,21 +47,10 @@ int main()
 		list.pop_back();
 	});
 	b.addItem(b1);
-	a.show();
+
+	Menu::console.setMenu(&a);
+	Menu::console.show();
 	
-	/* 
-	//clist<int>::iterator k;
-	//is.open("meow");
-	//Float c(12.5);
-	//Float* s = new Float[25];
-	//char* str = c.to_cstring();
-	//str[3] = '2';
-	//Float k;
-	//Int csd;
-	//k.from_cstring(str);
-	//std::string sss;;
-	//std::cout << typeid(c).hash_code() << " " << typeid(csd).hash_code();
-	//*/
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

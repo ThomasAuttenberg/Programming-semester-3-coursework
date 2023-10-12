@@ -13,44 +13,48 @@
 #include "clist.h"
 #include "Menu.h"
 
+
+template <class T>
+void safeInput(T& value) {
+	
+	while (!(std::cin >> value)) {
+			std::cout << "\033[01;38;05;15;48;05;196mНекорректный ввод. Повторите попытку\033[0m\n";
+			std::cin.clear();
+			std::cin.ignore(32767, '\n');
+;		}
+
+}
+
+
 int main()
 {
 	system("chcp 1251");
 	system("cls");
 
-	float ca = 0;
-	ca++;
-	std::ifstream is;
-	void* n;
-	int sss = 0;
-	std::list<float> lis;
-
-
-	clist<float> list = { 13,12,5,3,5 };
-	list.foreach([](float s) {
-		
-		
-		
-	});
-
-	Menu a("How are you today?");
-	Menu b([&]()-> void {
-		
-		list.foreach([](float s) {
-			std::cout << s << " ";
-			});
-		std::cout << "\n";
-	});
-	MenuItem a1("How's it",b);
-	a.addItem(a1);
-	MenuItem b1("Delete the last", [&]() {
-		list.pop_back();
-	});
-	b.addItem(b1);
-
-	Menu::console.setMenu(&a);
-	Menu::console.show();
+	clist<Object*> list;
 	
+	Menu navigationMenu([&]() {
+		list.foreach([](Object* ptr) {
+
+			
+
+			});
+		});
+
+	Menu intInseringPage([&]() {
+		
+		std::cout << "Введите значение для элемента:\n";
+		Int k;
+		safeInput(k);
+		std::cout << k;
+		Menu::console.setMenu(&navigationMenu);
+
+	}, true);
+	MenuItem nav_i1("push_front", intInseringPage);
+	navigationMenu.addItem(nav_i1);
+
+	Menu::console.setMenu(&intInseringPage);
+	Menu::console.show();
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

@@ -14,13 +14,15 @@ Console Menu::console = Console::console();
 //										  executes Item actions				)
 //============================================================================
 
-Menu::Item::Item(const char* label, Menu& goToRef)
+
+
+Menu::Item::Item(const char* label, Menu& goToRef) 
 {
 	this->label = label;
 	this->goToRef = &goToRef;
 }
 
-Menu::Item::Item(const char* label, std::function<void(void)> action)
+Menu::Item::Item(const char* label, std::function<void(void)> action) 
 {
 	this->label = label;
 	this->action = action;
@@ -35,7 +37,7 @@ Menu::Item::Item(const Item& other)
 }
 
 
-void Menu::Item::go() {
+void Menu::Item::go() { 
 	if (goToRef != nullptr) {
 		if (location != nullptr) {
 			if(goToRef != location->where_called_from)
@@ -92,7 +94,7 @@ void Menu::addItem(Item item) {
 }
 
 //============================================================================
-// CONSOLE BLOCK: Direct output
+// CONSOLE BLOCK: Direct console output | user interaction handler
 //============================================================================
 
 char Console::getch()
@@ -117,9 +119,17 @@ void Console::show()
 {
 	if (currentMenu == nullptr) return;
 	while (1) {
+		Menu* menuOnIterationStart = currentMenu;
 		if (currentMenu->isInputMenu == true) {
 				currentMenu->printingFunction();
-			if (currentMenu->where_called_from != nullptr) setMenu(currentMenu->where_called_from);
+				if (menuOnIterationStart != currentMenu) continue;
+				if (currentMenu->where_called_from != nullptr) {
+					setMenu(currentMenu->where_called_from);
+					continue;
+				}
+				else {
+					break;
+				}
 		}
 		else {
 			auto selectedButton = currentMenu->items.begin();

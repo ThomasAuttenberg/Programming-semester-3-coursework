@@ -53,17 +53,28 @@ void Menu::addItem(Item item) {
 
 void Menu::show()
 {
-	system("cls");
 
-	if (text != nullptr)
-		printf(text);
+	do {
+		system("cls");
 
-	if (printingFunction != nullptr)
-		printingFunction();
-	
-	if (isInputMenu == true)
-		where_called_from->show();
+		if (text != nullptr)
+			printf(text);
 
+		if (printingFunction != nullptr)
+			printingFunction();
+
+		if (isInputMenu == true)
+			where_called_from->show();
+		else {
+
+			items.foreach([](Item& menu) {
+
+				std::cout <<
+
+				});
+
+		}
+	}while(!isInputMenu )
 	
 	
 }

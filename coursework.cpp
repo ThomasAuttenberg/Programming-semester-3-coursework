@@ -21,6 +21,11 @@ int main()
 	void* n;
 	int sss = 0;
 	clist<float> list = { 13,12,5,3,5 };
+
+	clist<MenuItem> list_ = {};
+	list_.foreach([](MenuItem& menu) {
+
+		});
 	list.foreach([](float s) {
 		
 		

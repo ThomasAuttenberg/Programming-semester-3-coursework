@@ -10,15 +10,18 @@
 template <typename T>
 concept primitive = std::is_fundamental<T>::value;
 
+
 template <primitive T>
 class Primitive :
-    private Object
+    public Object
 {
 private:
 
 	T convertContainer(void* value) const;
 
 public:
+
+	static const int identifier;
 
 	Primitive();
 	Primitive(T value);
@@ -40,6 +43,8 @@ public:
 	operator T&();
 
 };
+template<primitive T>
+const int Primitive<T>::identifier = typeid(Primitive<T>).hash_code();;
 
 template<primitive T>
 inline T Primitive<T>::convertContainer(void* value) const

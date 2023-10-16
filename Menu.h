@@ -3,8 +3,6 @@
 #include "clist.h"
 
 
-// Use Menu(const char*) constructor to change the default text content representation
-
 // Use this vars to change buttons size or 'back' button label.
 const char BACKWARD_BUTTON_TEXT[] = "<- Back";
 const int ITEM_LABEL_MAX_LENGTH = 50;
@@ -14,10 +12,16 @@ class Menu;
 
 // Serve to provide menu pages transitions and user interaction logics.
 class Console {
+private:
     static Menu* currentMenu;
     Console() = default;
-    static char getch();
+    static std::pair<bool,char> getch();
 public:
+    struct keyListener {
+        char key = 0;
+        std::function<void(void)> handler = nullptr;
+        bool isServiceKey = false;
+    };
     static Console& console();
     static void setMenu(Menu*);
     static void show();    
@@ -34,6 +38,7 @@ private:
     friend class Console;
     friend struct Item;
     clist<Menu::Item> items;
+    std::list<Console::keyListener> keyListeners;
     bool backButtonSetted = false;
     const char* text  = nullptr;
     std::function<void(void)> printingFunction = nullptr;
@@ -66,6 +71,7 @@ public:
     Menu(const Menu& other) = default;
     // Embeds the button in menu.
     void addItem(Item item);
+    void addKeyListener(char keycode, std::function<void(void)> handler, bool isServiceKey = false);
 };
 
 typedef Menu::Item MenuItem;

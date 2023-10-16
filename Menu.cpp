@@ -70,6 +70,15 @@ void Menu::printButtons(clist<Menu::Item>::iterator& selected)
 		std::cout << "\n";
 }
 
+void Menu::addKeyListener(char keycode, std::function<void(void)> handler, bool isServiceKey)
+{
+	Console::keyListener listener;
+	listener.key = keycode;
+	listener.handler = handler;
+	listener.isServiceKey = isServiceKey;
+	keyListeners.push_back(listener);
+}
+
 
 Menu::Menu(const char* text)
 {
@@ -97,11 +106,11 @@ void Menu::addItem(Item item) {
 // CONSOLE BLOCK: Direct console output | user interaction handler
 //============================================================================
 
-char Console::getch()
+std::pair<bool,char> Console::getch()
 {
 	char n = _getch();
-	if (n != 224 && n != -32) return n;
-	return _getch();
+	if (n != 224 && n != -32) return {0,n};
+	return {1,_getch()};
 }
 
 void Console::setMenu(Menu* ref)
@@ -133,27 +142,43 @@ void Console::show()
 		}
 		else {
 			auto selectedButton = currentMenu->items.begin();
-			int pressedKey = -1;
+			std::pair<bool,char> pressedKey; // first value: is service symbol? second value: symbol code.
+			pressedKey.first = 0;
+			pressedKey.second = -1;
 			if (currentMenu->where_called_from != nullptr && !currentMenu->backButtonSetted) {
 				MenuItem newItem(BACKWARD_BUTTON_TEXT, *currentMenu->where_called_from);
 				currentMenu->items.push_back(newItem);
 				currentMenu->backButtonSetted = true;
 			}
+			bool hasActionOccuredPageChanging = false;
 			while (1) {
 				do {
-					switch (pressedKey) {
-					case 80: selectedButton++; break;
-					case 72: selectedButton--; break;
-					}
 					
+					if (pressedKey.first == 1) {
+						switch (pressedKey.second) {
+						case 80: selectedButton++; break; //down arrow
+						case 72: selectedButton--; break; //up arrow
+						}
+					}
+
+					// User KeyListeners setted to this menu page
+					for (keyListener listener : currentMenu->keyListeners) {
+						if (listener.key == pressedKey.second && listener.isServiceKey == pressedKey.first)
+							listener.handler();
+					}
+
 					system("cls");
 					currentMenu->printingFunction();
 					currentMenu->printButtons(selectedButton);
-
-				} while ((pressedKey = getch()) != 13);
+					pressedKey = getch();
+				} while (!(pressedKey.first == 0 && pressedKey.second == 13));
 
 				if ((*selectedButton).action != nullptr) {
 					(*selectedButton).action();
+					if (currentMenu != menuOnIterationStart) {
+						hasActionOccuredPageChanging = true;
+						break;
+					}
 					system("cls");
 				}
 				else {
@@ -163,7 +188,7 @@ void Console::show()
 				}
 
 			}
-			(*selectedButton).go();
+			if(!hasActionOccuredPageChanging) (*selectedButton).go();
 		}
 	}
 }

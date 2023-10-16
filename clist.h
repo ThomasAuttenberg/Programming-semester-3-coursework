@@ -7,9 +7,10 @@ class clist
 private:
 	friend class iterator;
 	struct Node {
-		Node* next;
-		Node* prev;
+		Node* next = nullptr;
+		Node* prev = nullptr;
 		T value;
+		Node() = default;
 		Node(T value) {
 			this->value = value;
 		}
@@ -291,23 +292,28 @@ inline void clist<T>::erase(iterator it)
 template<typename T>
 inline void clist<T>::pop_back()
 {
-	if (empty()) throw std::logic_error("pop_back called on empty list");
-	erase(--begin());
+	if (empty()) 
+		throw std::logic_error("pop_back called on empty list");
+	else
+		erase(--begin());
 }
 
 template<typename T>
 inline void clist<T>::pop_front()
 {
-	if (empty()) throw std::logic_error("pop_front called on empty list");
-	erase(begin());
+	if (empty()) 
+		throw std::logic_error("pop_front called on empty list");
+	else
+		erase(begin());
 }
 
 template<typename T>
 inline void clist<T>::shift_forward()
 {
-	if (empty()) throw std::logic_error("List is empty");
-
-	first = first->next;
+	if (empty()) 
+		throw std::logic_error("List is empty");
+	else
+		first = first->next;
 }
 
 template<typename T>
@@ -369,16 +375,21 @@ inline T& clist<T>::iterator::operator*()
 template<typename T>
 inline clist<T>::iterator clist<T>::iterator::operator++(int n)
 {
-	if (ptr == nullptr) throw std::logic_error("Invalid iterator");
-	iterator temp = *this;
-	if (n == 0) {
-		++*this;
+	if (ptr == nullptr) {
+		throw std::logic_error("Invalid iterator");
 	}
-	else {
-		for (int i = 0; i < n; i++)
-			++*this;
+	else
+	{
+		iterator temp = *this;
+		if (n == 0) {
+			++* this;
+		}
+		else {
+			for (int i = 0; i < n; i++)
+				++* this;
+		}
+		return temp;
 	}
-	return temp;
 }
 
 template<typename T>
@@ -394,26 +405,33 @@ inline clist<T>::iterator& clist<T>::iterator::operator++()
 template<typename T>
 inline clist<T>::iterator& clist<T>::iterator::operator--()
 {
-	if(ptr == nullptr) throw std::logic_error("Invalid iterator");
-	ptr = ptr->prev;
-	return *this;
+	if (ptr == nullptr) {
+		throw std::logic_error("Invalid iterator");
+	}
+	else {
+		ptr = ptr->prev;
+		return *this;
+	}
 }
 
 template<typename T>
 inline clist<T>::iterator clist<T>::iterator::operator--(int n)
 {
-	if(ptr == nullptr) throw std::logic_error("Invalid iterator");
-
-	iterator temp = *this;
-	if (n == 0) {
-		--*this;
+	if (ptr == nullptr) {
+		throw std::logic_error("Invalid iterator");
 	}
 	else {
-		for (int i = 0; i < n; i++) {
-			--*this;
+		iterator temp = *this;
+		if (n == 0) {
+			--* this;
 		}
+		else {
+			for (int i = 0; i < n; i++) {
+				--* this;
+			}
+		}
+		return temp;
 	}
-	return temp;
 }
 
 template<typename T>

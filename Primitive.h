@@ -48,7 +48,7 @@ inline T Primitive<T>::convertContainer(void* value) const
 };
 
 template<primitive T>
-inline Primitive<T>::Primitive() : Object()
+inline Primitive<T>::Primitive() : Object(T())
 {
 	initialize();
 };

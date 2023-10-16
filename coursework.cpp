@@ -13,52 +13,48 @@
 #include "clist.h"
 #include "Menu.h"
 
+
+template <class T>
+void safeInput(T& value) {
+	
+	while (!(std::cin >> value)) {
+			std::cout << "\033[01;38;05;15;48;05;196mНекорректный ввод. Повторите попытку\033[0m\n";
+			std::cin.clear();
+			std::cin.ignore(32767, '\n');
+;		}
+
+}
+
+
 int main()
 {
-	float ca = 0;
-	ca++;
-	std::ifstream is;
-	void* n;
-	int sss = 0;
-	clist<float> list = { 13,12,5,3,5 };
+	system("chcp 1251");
+	system("cls");
 
-	clist<MenuItem> list_ = {};
-	list_.foreach([](MenuItem& menu) {
-
-		});
-	list.foreach([](float s) {
-		
-		
-		
-	});
-
-	Menu a("How are you today?");
-	Menu b([&]()-> void {
-		
-		list.foreach([](float s) {
-			std::cout << s << " ";
-			});
-	});
-	MenuItem a1("How's it",b);
-	a.addItem(a1);
-	MenuItem b1("Delete the last", [&]() {
-		list.pop_back();
-	});
-	b.addItem(b1);
+	clist<Object*> list;
 	
-	/* 
-	//clist<int>::iterator k;
-	//is.open("meow");
-	//Float c(12.5);
-	//Float* s = new Float[25];
-	//char* str = c.to_cstring();
-	//str[3] = '2';
-	//Float k;
-	//Int csd;
-	//k.from_cstring(str);
-	//std::string sss;;
-	//std::cout << typeid(c).hash_code() << " " << typeid(csd).hash_code();
-	//*/
+	Menu navigationMenu([&]() {
+		list.foreach([](Object* ptr) {
+
+			
+
+			});
+		});
+
+	Menu intInseringPage([&]() {
+		
+		std::cout << "Введите значение для элемента:\n";
+		Int k;
+		safeInput(k);
+		std::cout << k;
+		Menu::console.setMenu(&navigationMenu);
+
+	}, true);
+	MenuItem nav_i1("push_front", intInseringPage);
+	navigationMenu.addItem(nav_i1);
+
+	Menu::console.setMenu(&intInseringPage);
+	Menu::console.show();
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

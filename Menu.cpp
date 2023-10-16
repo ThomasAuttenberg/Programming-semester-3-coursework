@@ -1,44 +1,86 @@
 #include "Menu.h"
+#include <conio.h>
+#include <windows.h>
 
-Menu::Item::Item(const char* label, Menu& goToRef)
+// Static fields
+Menu* Console::currentMenu = nullptr;
+Console Menu::console = Console::console();
+
+
+//============================================================================
+// MenuItem BLOCK: Menu fields & console manipulations
+// directed on getting a correct behaivor (makes clear who's called the menu,
+//										  sets the current menu in console
+//										  executes Item actions				)
+//============================================================================
+
+
+
+Menu::Item::Item(const char* label, Menu& goToRef) 
 {
 	this->label = label;
 	this->goToRef = &goToRef;
 }
 
-Menu::Item::Item(const char* label, std::function<void(void)> action)
+Menu::Item::Item(const char* label, std::function<void(void)> action) 
 {
 	this->label = label;
 	this->action = action;
 }
 
-Menu::Item::Item(const char* label, Menu& goToRef)
+Menu::Item::Item(const Item& other)
 {
-	this->label = label;
-	this->goToRef = &goToRef;
-	this->action = action;
+	this->action = other.action;
+	this->goToRef = other.goToRef;
+	this->label = other.label;
+	this->location = other.location;
 }
 
-void Menu::Item::go() {
+
+void Menu::Item::go() { 
 	if (goToRef != nullptr) {
 		if (location != nullptr) {
-			this->goToRef->where_called_from = location;
+			if(goToRef != location->where_called_from)
+				goToRef->where_called_from = location;
 		}
-		this->goToRef->show();
+		Console::console().setMenu(goToRef);
 	}
 	if (action != nullptr) {
 		action();
 	}
 }
 
-Menu::Menu(const char* text) : Menu(text)
+//============================================================================
+// Menu BLOCK: Buttons and text printing logic, text and functions storage
+//============================================================================
+
+
+void Menu::printButtons(clist<Menu::Item>::iterator& selected)
 {
-	this->text = text;
-	if (where_called_from != nullptr)
-		items.push_back( new Item(BACKWARD_BUTTON_TEXT, *where_called_from) );
+		std::cout << "\n";
+		items.foreach([&](Item& item) -> void {
+			if (&(*selected) == &item) {
+				int label_length = strlen(item.label);
+				std::cout << "\n"<<"\033[0;30;47m" << item.label << std::string(ITEM_LABEL_MAX_LENGTH - label_length, ' ') << "\033[0m";
+			}
+			else {
+				std::cout << "\n" << item.label;
+			}
+			});
+		std::cout << "\n";
 }
 
-Menu::Menu(std::function<void(void)> printingFunction, bool isInputMenu) : Menu(printingFunction)
+
+Menu::Menu(const char* text)
+{
+	this->text = text;
+	printingFunction = [&]() -> void {
+		std::cout << this->text;
+	};
+
+}
+
+Menu::Menu(std::function<void(void)> printingFunction, bool isInputMenu)
 {
 	this->printingFunction = printingFunction;
 	this->isInputMenu = isInputMenu;
@@ -51,30 +93,77 @@ void Menu::addItem(Item item) {
 	if(where_called_from != nullptr) items.shif_backward();
 }
 
-void Menu::show()
+//============================================================================
+// CONSOLE BLOCK: Direct console output | user interaction handler
+//============================================================================
+
+char Console::getch()
 {
+	char n = _getch();
+	if (n != 224 && n != -32) return n;
+	return _getch();
+}
 
-	do {
-		system("cls");
+void Console::setMenu(Menu* ref)
+{
+	currentMenu = ref;
+}
 
-		if (text != nullptr)
-			printf(text);
+Console& Console::console()
+{
+	static Console entity;
+	return entity;
+}
 
-		if (printingFunction != nullptr)
-			printingFunction();
-
-		if (isInputMenu == true)
-			where_called_from->show();
-		else {
-
-			items.foreach([](Item& menu) {
-
-				std::cout <<
-
-				});
-
+void Console::show()
+{
+	if (currentMenu == nullptr) return;
+	while (1) {
+		Menu* menuOnIterationStart = currentMenu;
+		if (currentMenu->isInputMenu == true) {
+				currentMenu->printingFunction();
+				if (menuOnIterationStart != currentMenu) continue;
+				if (currentMenu->where_called_from != nullptr) {
+					setMenu(currentMenu->where_called_from);
+					continue;
+				}
+				else {
+					break;
+				}
 		}
-	}while(!isInputMenu )
-	
-	
+		else {
+			auto selectedButton = currentMenu->items.begin();
+			int pressedKey = -1;
+			if (currentMenu->where_called_from != nullptr && !currentMenu->backButtonSetted) {
+				MenuItem newItem(BACKWARD_BUTTON_TEXT, *currentMenu->where_called_from);
+				currentMenu->items.push_back(newItem);
+				currentMenu->backButtonSetted = true;
+			}
+			while (1) {
+				do {
+					switch (pressedKey) {
+					case 80: selectedButton++; break;
+					case 72: selectedButton--; break;
+					}
+					
+					system("cls");
+					currentMenu->printingFunction();
+					currentMenu->printButtons(selectedButton);
+
+				} while ((pressedKey = getch()) != 13);
+
+				if ((*selectedButton).action != nullptr) {
+					(*selectedButton).action();
+					system("cls");
+				}
+				else {
+					if ((*selectedButton).goToRef != nullptr) {
+						break;
+					}
+				}
+
+			}
+			(*selectedButton).go();
+		}
+	}
 }

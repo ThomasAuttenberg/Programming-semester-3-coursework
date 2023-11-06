@@ -32,13 +32,14 @@ public:
 	T getValue() const;
 
 	void initialize() override;
+	//Returns the string representation of value. [!] Need to be freed.
 	char* to_cstring() const override;
 	void from_cstring(const char*) override;
 	void writeBinary(std::ofstream&) const override;
 	void readBinary(std::ifstream&) override;
 	Object* getCopy() const override;
-	std::partial_ordering compare(const Object& other) const; 
-	void add(const Object& other); 
+	std::partial_ordering compare(const Object& other) const override; 
+	void add(const Object& other) override; 
 
 	operator T&();
 
@@ -101,7 +102,7 @@ template<primitive T>
 inline void Primitive<T>::initialize()
 {
 	_typeName = typeid(*this).name();
-	typeIdentifier = typeid(*this).hash_code();
+	Object::typeIdentifier = typeid(*this).hash_code();
 };
 
 template<primitive T>
@@ -150,14 +151,14 @@ inline Object* Primitive<T>::getCopy() const
 template<primitive T>
 inline std::partial_ordering Primitive<T>::compare(const Object& other) const
 {
-	if (typeIdentifier != other.identifier()) return std::partial_ordering::unordered;
+	if ((Object::identifier()) != (other.identifier())) return std::partial_ordering::unordered;
 	return getValue() <=> convertContainer(other.getValue());
 };
 
 template<primitive T>
 inline void Primitive<T>::add(const Object& other)
 {
-	if (typeIdentifier != other.identifier()) return;
+	if (Object::identifier() != other.identifier()) return;
 	setContainerValue(getValue() + convertContainer(other.getValue()));
 
 };

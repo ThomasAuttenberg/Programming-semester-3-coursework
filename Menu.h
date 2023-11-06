@@ -3,7 +3,7 @@
 #include "clist.h"
 
 
-// Use this vars to change buttons size or 'back' button label.
+// Use this vars to change buttons length or 'back' button label.
 const char BACKWARD_BUTTON_TEXT[] = "<- Back";
 const int ITEM_LABEL_MAX_LENGTH = 50;
 
@@ -71,6 +71,7 @@ public:
     Menu(const Menu& other) = default;
     // Embeds the button in menu.
     void addItem(Item item);
+    // Sets the keylistener to menu. Handler calls when user presses a char with the stated keycode. IsServiceKey sets is it necessary to ignore the first key code, usually provided with a service key 
     void addKeyListener(char keycode, std::function<void(void)> handler, bool isServiceKey = false);
 };
 

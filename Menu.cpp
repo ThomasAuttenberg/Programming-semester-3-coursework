@@ -38,15 +38,16 @@ Menu::Item::Item(const Item& other)
 
 
 void Menu::Item::go() { 
+	
+	if (action != nullptr) {
+		action();
+	}
 	if (goToRef != nullptr) {
 		if (location != nullptr) {
 			if(goToRef != location->where_called_from)
 				goToRef->where_called_from = location;
 		}
 		Console::console().setMenu(goToRef);
-	}
-	if (action != nullptr) {
-		action();
 	}
 }
 
@@ -99,7 +100,7 @@ void Menu::addItem(Item item) {
 	if(where_called_from != nullptr) items.shift_forward();
 	item.location = this;
 	items.push_back(item);
-	if(where_called_from != nullptr) items.shif_backward();
+	if(where_called_from != nullptr) items.shift_backward();
 }
 
 //============================================================================
@@ -141,7 +142,6 @@ void Console::show()
 				}
 		}
 		else {
-			auto selectedButton = currentMenu->items.begin();
 			std::pair<bool,char> pressedKey; // first value: is service symbol? second value: symbol code.
 			pressedKey.first = 0;
 			pressedKey.second = -1;
@@ -150,6 +150,7 @@ void Console::show()
 				currentMenu->items.push_back(newItem);
 				currentMenu->backButtonSetted = true;
 			}
+			auto selectedButton = currentMenu->items.begin();
 			bool hasActionOccuredPageChanging = false;
 			while (1) {
 				do {

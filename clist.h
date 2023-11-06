@@ -21,7 +21,7 @@ private:
 
 public:
 	
-	typedef T& elem;
+	//typedef T& elem;
 	class iterator;
 	class const_iterator;
 
@@ -33,37 +33,56 @@ public:
 	clist& operator=(const clist<T>&);
 	clist& operator=(clist<T>&&);
 
+	//Inserts the element as the last one
 	void push_back(T);
+	//Inserts the element as the first one
 	void push_front(T);
+	//Inserting the value before the node iterator points on
 	void insert(iterator, T);
-	void erase(iterator, iterator);
+	//Erasing the values in [begin; end)
+	void erase(iterator begin, iterator end);
+	//Erasing the value iterator points on
 	void erase(iterator);
+	//Deletes all the values from cycled list
 	void clear();
+	//Deletes the last element
 	void pop_back();
+	//Deletes the first element
 	void pop_front();
 	
+	// Scrolls the list left (the second element becomes the first, the first becomes the last)
 	void shift_forward();
-	void shif_backward();
+	// Scrolls the list right (the first element becomes the second, the last element becomes the first)
+	void shift_backward();
 	
-	
+	// Performs the received function for every element in list. Function has to be void and get clist value or it's reference to it as an argument: void f(<type>& value) 
 	auto foreach(std::function<void(T&)>);
+	// Performs the received function for every element in list. Function has to be void and get const clist value or reference to it as an argument: void f(const <type>& value)
 	auto foreach(std::function<void(const T&)>) const;
 
+	//shows is clist empty
 	bool empty() const;
+	//returns the current clist size
 	size_t size() const;
 
+	//Returns a reference to the first element in cycled list
 	T& front();
+	//Returns a reference to the last element in cycled list
 	T& back();
+	//Returns a const reference to the first element in cycled list
 	const T& front() const;
+	//Returns a const reference to the last element in cycled list
 	const T& back() const;
 	
+	//Returns const iterator points to the first element in cycled list
 	const_iterator begin() const;
 
+	//Returns iterator points to the first element in cycled list
 	iterator begin();
 
 	~clist();
 
-
+	// Iterator class
 	class iterator {
 	private:
 		Node* ptr = nullptr;
@@ -74,6 +93,7 @@ public:
 		iterator();
 		iterator(Node* ptr, const clist<T>* container);
 		iterator(const iterator& other);
+		//Returns a reference to the element iterator is pointing at
 		T& operator*();
 		iterator operator++(int);
 		iterator& operator++();
@@ -86,7 +106,7 @@ public:
 		iterator& operator=(iterator&& other);
 
 	};
-
+	//Const iterator
 	class const_iterator {
 	private:
 		Node* ptr = nullptr;
@@ -99,6 +119,7 @@ public:
 		const_iterator(Node* ptr, const clist<T>* container);
 		const_iterator(const const_iterator& other);
 		const_iterator(const iterator& other);
+		//Returns the reference to the element iterator is pointing at. Value can't be changed.
 		const T& operator*() const;
 		const_iterator operator++(int);
 		const_iterator& operator++();
@@ -293,7 +314,7 @@ template<typename T>
 inline void clist<T>::pop_back()
 {
 	if (empty()) 
-		throw std::logic_error("pop_back called on empty list");
+		throw std::logic_error("pop_back called on empty clist");
 	else
 		erase(--begin());
 }
@@ -302,7 +323,7 @@ template<typename T>
 inline void clist<T>::pop_front()
 {
 	if (empty()) 
-		throw std::logic_error("pop_front called on empty list");
+		throw std::logic_error("pop_front called on empty clist");
 	else
 		erase(begin());
 }
@@ -311,15 +332,15 @@ template<typename T>
 inline void clist<T>::shift_forward()
 {
 	if (empty()) 
-		throw std::logic_error("List is empty");
+		throw std::logic_error("shift_forward called on empty clist");
 	else
 		first = first->next;
 }
 
 template<typename T>
-inline void clist<T>::shif_backward()
+inline void clist<T>::shift_backward()
 {
-	if(empty()) throw std::logic_error("List is empty");
+	if(empty()) throw std::logic_error("shift_backward called on empty clist");
 	first = first->prev;
 }
 
@@ -367,7 +388,7 @@ template<typename T>
 inline T& clist<T>::iterator::operator*()
 {
 	if (ptr == nullptr) 
-		throw std::logic_error("Invalid iterator");
+		throw std::logic_error("*iter with invalid iterator");
 	else
 		return this->ptr->value;
 }
@@ -376,7 +397,7 @@ template<typename T>
 inline clist<T>::iterator clist<T>::iterator::operator++(int n)
 {
 	if (ptr == nullptr) {
-		throw std::logic_error("Invalid iterator");
+		throw std::logic_error("iter++ with invalid iterator");
 	}
 	else
 	{
@@ -399,14 +420,14 @@ inline clist<T>::iterator& clist<T>::iterator::operator++()
 		ptr = ptr->next;
 		return *this;
 	}
-	throw std::logic_error("Invalid iterator");
+	throw std::logic_error("++iter with invalid iterator");
 }
 
 template<typename T>
 inline clist<T>::iterator& clist<T>::iterator::operator--()
 {
 	if (ptr == nullptr) {
-		throw std::logic_error("Invalid iterator");
+		throw std::logic_error("--iter with invalid iterator");
 	}
 	else {
 		ptr = ptr->prev;
@@ -418,7 +439,7 @@ template<typename T>
 inline clist<T>::iterator clist<T>::iterator::operator--(int n)
 {
 	if (ptr == nullptr) {
-		throw std::logic_error("Invalid iterator");
+		throw std::logic_error("iter-- with invalid iterator");
 	}
 	else {
 		iterator temp = *this;
@@ -469,7 +490,7 @@ inline T& clist<T>::front()
 {
 	if (!empty())
 		return first->value;
-	throw std::logic_error("List is empty");
+	throw std::logic_error("front() called on empty clist");
 }
 
 template<typename T>
@@ -477,7 +498,7 @@ inline T& clist<T>::back()
 {
 	if(!empty())
 		return first->prev->value;
-	throw std::logic_error("List is empty");
+	throw std::logic_error("back() called on empty clist");
 }
 
 template<typename T>
@@ -485,7 +506,7 @@ inline const T& clist<T>::front() const
 {
 	if (!empty())
 		return first->prev->value;
-	throw std::logic_error("List is empty");
+	throw std::logic_error("front() called on empty clist");
 }
 
 template<typename T>
@@ -493,7 +514,7 @@ inline const T& clist<T>::back() const
 {
 	if (!empty())
 		return first->prev->value;
-	throw std::logic_error("List is empty");
+	throw std::logic_error("back() called on empty clist");
 }
 
 template<typename T>
@@ -602,13 +623,13 @@ inline clist<T>::const_iterator& clist<T>::const_iterator::operator++()
 		ptr = ptr->next;
 		return *this;
 	}
-	throw std::logic_error("Invalid iterator");
+	throw std::logic_error("++iter with invalid iterator");
 }
 
 template<typename T>
 inline clist<T>::const_iterator clist<T>::const_iterator::operator--(int n)
 {
-	if(ptr == nullptr) throw std::logic_error("Invalid iterator");
+	if(ptr == nullptr) throw std::logic_error("iter-- with invalid iterator");
 
 	const_iterator temp = *this;
 	if (n == 0) {
@@ -625,7 +646,7 @@ inline clist<T>::const_iterator clist<T>::const_iterator::operator--(int n)
 template<typename T>
 inline clist<T>::const_iterator& clist<T>::const_iterator::operator--()
 {
-	if (ptr == nullptr) throw std::logic_error("Invalid iterator");
+	if (ptr == nullptr) throw std::logic_error("--iter with invalid iterator");
 	ptr = ptr->prev;
 	return *this;
 }

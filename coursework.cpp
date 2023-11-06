@@ -160,8 +160,8 @@ int main()
 		}
 		bool wasListEmpty = !list.size();
 		while (true) {
-			int type;
-			inputStream.read((char*)&type, sizeof(int));
+			size_t type;
+			inputStream.read((char*)&type, sizeof(size_t));
 			if (inputStream.eof()) break;
 			if (type == Float::identifier) {
 				Float* obj = new Float;
@@ -201,8 +201,8 @@ int main()
 			}
 		}
 		list.foreach([&](Object* obj) {
-			int identifier = obj->identifier();
-			outputStream.write((char*)&identifier, sizeof(int));
+			size_t identifier = obj->identifier();
+			outputStream.write((char*)&identifier, sizeof(size_t));
 			obj->writeBinary(outputStream);
 		});
 	}, true);

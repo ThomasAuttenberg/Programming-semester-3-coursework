@@ -62,7 +62,7 @@ void* Object::getValue() const {
 	return container;
 }
 
-int Object::identifier() const
+size_t Object::identifier() const
 {
 	return typeIdentifier;
 }

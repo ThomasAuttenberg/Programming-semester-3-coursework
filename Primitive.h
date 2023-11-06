@@ -21,7 +21,7 @@ private:
 
 public:
 
-	static const int identifier;
+	static const size_t identifier;
 
 	Primitive();
 	Primitive(T value);
@@ -45,7 +45,7 @@ public:
 
 };
 template<primitive T>
-const int Primitive<T>::identifier = typeid(Primitive<T>).hash_code();;
+const size_t Primitive<T>::identifier = typeid(Primitive<T>).hash_code();;
 
 template<primitive T>
 inline T Primitive<T>::convertContainer(void* value) const
@@ -151,6 +151,7 @@ inline Object* Primitive<T>::getCopy() const
 template<primitive T>
 inline std::partial_ordering Primitive<T>::compare(const Object& other) const
 {
+	typeIdentifier;
 	if ((Object::identifier()) != (other.identifier())) return std::partial_ordering::unordered;
 	return getValue() <=> convertContainer(other.getValue());
 };

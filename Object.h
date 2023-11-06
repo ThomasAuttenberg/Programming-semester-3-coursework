@@ -61,7 +61,7 @@ public:
 
 	void* getValue() const; //container getter
 
-	int identifier() const; //returns the class (subclass) typeIdentifier
+	size_t identifier() const; //returns the class (subclass) typeIdentifier
 
 	const char* typeName() const; //returns the class (subclass) _typeName
 

@@ -129,14 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleFrame.cpp" />
     <ClCompile Include="coursework.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clist.h" />
-    <ClInclude Include="ConsoleFrame.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Object.h" />

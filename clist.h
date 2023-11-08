@@ -233,7 +233,7 @@ inline void clist<T>::insert(iterator it, T val)
 {
 	iterator empty;
 
-	if (it.associatedContainer != this) throw std::logic_error("Iterator isn't linked to that container");
+	if (it.associatedContainer != this) throw std::logic_error("insert: Iterator isn't linked to that container");
 
 	if (it != empty) {
 
@@ -255,9 +255,12 @@ inline void clist<T>::insert(iterator it, T val)
 			first = newNode;
 	}
 	else {
-
-		push_back(val);
-
+		if (_size == 0) {
+			push_back(val);
+		}
+		else {
+			throw std::logic_error("insert: invalid iterator ");
+		}
 	}
 }
 
@@ -274,7 +277,7 @@ inline void clist<T>::erase(iterator begin, iterator end)
 {
 	iterator empty;
 	if (begin == empty && begin.associatedContainer == this && end == empty && end.associatedContainer == this && _size == 0) return;
-	if (begin.associatedContainer != this || end.associatedContainer != this) throw std::logic_error("Iterator isn't linked to that container");
+	if (begin.associatedContainer != this || end.associatedContainer != this) throw std::logic_error("erase: using of iterator isn't linked to that container");
 	try {
 		*begin;
 		*end;
@@ -304,10 +307,12 @@ inline void clist<T>::erase(iterator begin, iterator end)
 template<typename T>
 inline void clist<T>::erase(iterator it)
 {
-	iterator start = it;
-	iterator end = ++it;
+	if (it != iterator()) {
+		iterator start = it;
+		iterator end = ++it;
 
-	erase(start, end);
+		erase(start, end);
+	}
 }
 
 template<typename T>

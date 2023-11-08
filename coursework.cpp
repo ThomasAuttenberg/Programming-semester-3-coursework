@@ -1,5 +1,4 @@
-﻿// coursework.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿
 
 #include <iostream>
 
@@ -14,6 +13,7 @@
 #include "Menu.h"
 #include <conio.h>
 #include <chrono>
+#include <algorithm>
 
 
 template <class T>
@@ -40,7 +40,7 @@ int main()
 	bool fixedIterActive = false;
 
 	Menu navigationMenu([&]() {
-		
+
 		std::cout <<
 			" ==================================================================\n\n"
 			<< " Используйте стрелки, чтобы переключаться между пунктами меню\n"
@@ -51,33 +51,35 @@ int main()
 
 		list.foreach([&](Object* ptr) {
 			std::cout << " ";
-		
+
 			if (fixedIterActive && *iter_fixed == ptr) std::cout << "\033[1;37;46m";
 			if (*iter == ptr) std::cout << "\033[1;37;42m";
 			if (ptr->identifier() == Float::identifier) std::cout << *((Float*)(ptr));
 			if (ptr->identifier() == Int::identifier) std::cout << *((Int*)(ptr));
 			if (ptr->identifier() == Char::identifier) std::cout << *((Char*)(ptr));
 			std::cout << "\033[0m";
-	});
-	});
+			});
+		});
 
 	navigationMenu.addKeyListener(75, [&iter]() {
 		try {
 			iter--;
-		}catch (std::exception ex) {
+		}
+		catch (std::exception ex) {
 			std::cout << "\n\n Поймано исключение: " << ex.what();
 			_getch();
 		}
-	}, true);
+		}, true);
 
 	navigationMenu.addKeyListener(77, [&iter]() {
 		try {
 			iter++;
-		}catch (std::exception ex) {
+		}
+		catch (std::exception ex) {
 			std::cout << "\n\n Поймано исключение: " << ex.what();
 			_getch();
 		}
-	}, true);
+		}, true);
 
 	navigationMenu.addKeyListener(9, [&]() {
 		if (fixedIterActive) fixedIterActive = false;
@@ -90,9 +92,9 @@ int main()
 			std::cout << "\n\n Первого итератора не существует! Заполните список";
 			_getch();
 		}
-	}, false);
+		}, false);
 
-	enum INSERT_TYPE{
+	enum INSERT_TYPE {
 		FLOAT, CHAR, INT
 	};
 	enum INSERT_METHOD {
@@ -103,14 +105,14 @@ int main()
 	iter = list.begin();
 
 	Menu InputPage([&]() {
-		
+
 		std::cout << "Введите значение для элемента: ";
 		if (insertType == INSERT_TYPE::CHAR) {
 			char inputBuffer;
 			safeInput(inputBuffer);
-			if(insertMethod == INSERT_METHOD::PUSH_BACK)
+			if (insertMethod == INSERT_METHOD::PUSH_BACK)
 				list.push_back((new Char(inputBuffer)));
-			if(insertMethod == INSERT_METHOD::PUSH_FRONT)
+			if (insertMethod == INSERT_METHOD::PUSH_FRONT)
 				list.push_front((new Char(inputBuffer)));
 			if (insertMethod == INSERT_METHOD::ITERATOR)
 				list.insert(iter, new Char(inputBuffer));
@@ -139,7 +141,7 @@ int main()
 
 		if (list.size() == 1) iter = list.begin();
 
-	}, true);
+		}, true);
 	std::list<Object*> allocatedObjects;
 	Menu readFilePage([&]() {
 		std::cout << "\n\n Введите имя файла или break для отмены:";
@@ -180,8 +182,8 @@ int main()
 			}
 		}
 		if (wasListEmpty) iter = list.begin();
-		
-	}, true);
+
+		}, true);
 
 	Menu writeFilePage([&]() {
 		std::cout << "\n\n Введите имя файла или break для отмены:";
@@ -204,8 +206,8 @@ int main()
 			size_t identifier = obj->identifier();
 			outputStream.write((char*)&identifier, sizeof(size_t));
 			obj->writeBinary(outputStream);
-		});
-	}, true);
+			});
+		}, true);
 
 	Menu editValuePage([&]() {
 		std::cout << " Введите новое значение для выбранного элемента [ ";
@@ -228,7 +230,7 @@ int main()
 			safeInput(*((Int*)*iter));
 		}
 
-	},true);
+		}, true);
 	char letter = '?';
 
 	Menu compareValuesPage([&]() {
@@ -266,29 +268,29 @@ int main()
 				std::cout << "Первый объект меньше второго ";
 				letter = 'l';
 			}
-			if (ordering == std::partial_ordering::unordered) { 
-				std::cout << "\033[33mНевозможно обеспечить корректное сравнение: unordered"; 
+			if (ordering == std::partial_ordering::unordered) {
+				std::cout << "\033[33mНевозможно обеспечить корректное сравнение: unordered";
 				letter = 'u';
 			}
-			std::cout <<"\033[0m";
+			std::cout << "\033[0m";
 			std::cout << "\nequal = e, less = l, greater = g, unordered = u";
 		}
 		catch (std::exception ex) {
-			std::cout << " \nПоймано исключение:  " << ex.what()<<" \n Проверьте, что список не пустой, и созданы оба итератора";
+			std::cout << " \nПоймано исключение:  " << ex.what() << " \n Проверьте, что список не пустой, и созданы оба итератора";
 		}
 
-	});
+		});
 	MenuItem compareValuesPageItem("Put result as e/l/g/u in list", [&] {
 		list.push_back(new Char(letter));
 		if (list.size() == 1) iter = list.begin();
 		Menu::console.setMenu(&navigationMenu);
-	});
+		});
 	compareValuesPage.addItem(compareValuesPageItem);
 
 	Object* folded = nullptr;
 	bool wasPreviousPut = false;
 	Menu foldValuesPage([&]() {
-		if(!wasPreviousPut) delete folded;
+		if (!wasPreviousPut) delete folded;
 		wasPreviousPut = false;
 		folded = nullptr;
 		std::cout << "Выбранные объекты:\n";
@@ -315,12 +317,12 @@ int main()
 		char* result = folded->to_cstring();
 		std::cout << "      Результат сложения: \033[32m" << result << "\033[0m";
 		delete[] result;
-	});
+		});
 	MenuItem foldValuesPageItem("Put result in the list", [&]() {
 		list.push_back(folded);
 		Menu::console.setMenu(&navigationMenu);
 		wasPreviousPut = true;
-	});
+		});
 	foldValuesPage.addItem(foldValuesPageItem);
 
 	Menu insertingPage("Выберите тип вставляемого элемента");
@@ -328,15 +330,15 @@ int main()
 	MenuItem insertingPage_i1("Float", [&]() {
 		insertType = INSERT_TYPE::FLOAT;
 		Menu::console.setMenu(&InputPage);
-	});
+		});
 	MenuItem insertingPage_i2("Char", [&]() {
 		insertType = INSERT_TYPE::CHAR;
 		Menu::console.setMenu(&InputPage);
-	});
+		});
 	MenuItem insertingPage_i3("Int", [&]() {
 		insertType = INSERT_TYPE::INT;
 		Menu::console.setMenu(&InputPage);
-	});
+		});
 	insertingPage.addItem(insertingPage_i1);
 	insertingPage.addItem(insertingPage_i2);
 	insertingPage.addItem(insertingPage_i3);
@@ -344,7 +346,7 @@ int main()
 	Menu testingPage([&]() {
 		clist<Object*> testList;
 		system("cls");
-		std::cout 
+		std::cout
 			<< "=================================================\n"
 			<< " Страница тестирования циклического списка\n"
 			<< " Введите бинарный файл для загрузки содержимого списка или break для отмены:";
@@ -364,7 +366,7 @@ int main()
 		if (dumpFile == "break") {
 			return;
 		}
-		
+
 		while (true) {
 			int type;
 			dumpStream.read((char*)&type, sizeof(int));
@@ -400,15 +402,15 @@ int main()
 		int min_of_two_requirements = max_element_iter_moves_to < testList.size() ? max_element_iter_moves_to : testList.size();
 		std::ofstream ofs;
 		ofs.open("testResults.txt");
-		ofs << "Количество элементов: "<<testList.size();
+		ofs << "Количество элементов: " << testList.size();
 		ofs << "\n\nВзятие по индексу\n";
 		ofs << "index | Время [мкс]\n";
-		
+
 		for (int i = 1; i < max_element_iter_moves_to && i < testList.size(); i++) {
 			operationStart = std::chrono::steady_clock::now();
 			auto iterator = testList.begin();
 			if (i > testList.size() / 2) {
-				for (int j = 0; j <= testList.size()-i; j++) {
+				for (int j = 0; j <= testList.size() - i; j++) {
 					iterator--;
 				}
 			}
@@ -419,7 +421,7 @@ int main()
 			}
 			*iterator;
 			operationEnd = std::chrono::steady_clock::now();
-			ofs <<i<<" "<< std::chrono::duration_cast<std::chrono::microseconds>(operationEnd - operationStart).count()<<"\n";
+			ofs << i << " " << std::chrono::duration_cast<std::chrono::microseconds>(operationEnd - operationStart).count() << "\n";
 		}
 		ofs << "Поиск\n";
 		ofs << "index искомого | Время [мкс]\n";
@@ -462,29 +464,29 @@ int main()
 		ofs.close();
 		testList.foreach([](Object* item) {
 			delete item;
-		});
+			});
 		testList.clear();
 		std::cout << "\n\n Тестирование завершено. Результаты записаны в файл testResults.txt";
 		_getch();
-	},true);
+		}, true);
 
 	MenuItem nav_i1("insert", [&]() {
 		insertMethod = INSERT_METHOD::ITERATOR;
 		Menu::console.setMenu(&insertingPage);
-	});
+		});
 	MenuItem nav_i2("erase", [&]() {
 		try {
 			if (fixedIterActive) {
 				auto iter_ = iter_fixed;
 				while (iter_ != iter) {
-					delete *iter_; 
+					delete* iter_;
 					iter_++;
 				}
-				list.erase(iter_fixed,iter);
+				list.erase(iter_fixed, iter);
 				fixedIterActive = false;
 			}
 			else {
-				delete *iter;
+				delete* iter;
 				list.erase(iter);
 			}
 			iter = list.begin();
@@ -494,15 +496,15 @@ int main()
 			_getch();
 		}
 		iter = list.begin();
-	});
+		});
 	MenuItem nav_i3("push_front", [&]() {
 		insertMethod = INSERT_METHOD::PUSH_FRONT;
 		Menu::console.setMenu(&insertingPage);
-	});
+		});
 	MenuItem nav_i4("push_back", [&]() {
 		insertMethod = INSERT_METHOD::PUSH_BACK;
 		Menu::console.setMenu(&insertingPage);
-	});
+		});
 	MenuItem nav_i5("pop_front", [&]() {
 		if (iter == list.begin()) {
 			try {
@@ -519,7 +521,7 @@ int main()
 			std::cout << "\n Поймано исключение: " << ex.what();
 			_getch();
 		}
-	});
+		});
 	MenuItem nav_i6("pop_back", [&]() {
 		try {
 			if (iter == --list.begin()) {
@@ -536,7 +538,7 @@ int main()
 			std::cout << "\n Поймано исключение: " << ex.what();
 			_getch();
 		}
-	});
+		});
 	MenuItem nav_i7("shift_forward", [&]() {
 		try {
 			list.shift_forward();
@@ -545,7 +547,7 @@ int main()
 			std::cout << "\n Поймано исключение: " << ex.what();
 			_getch();
 		}
-	});
+		});
 	MenuItem nav_i8("shift_backward", [&]() {
 		try {
 			list.shift_backward();
@@ -554,7 +556,7 @@ int main()
 			std::cout << "\n Поймано исключение: " << ex.what();
 			_getch();
 		}
-	});
+		});
 	MenuItem nav_i9("readFromBinaryFile", readFilePage);
 	MenuItem nav_i10("writeToBinaryFile", writeFilePage);
 	MenuItem nav_i11("\n[Edit Value]", editValuePage);
@@ -576,10 +578,11 @@ int main()
 	navigationMenu.addItem(nav_i12);
 	navigationMenu.addItem(nav_i13);
 	navigationMenu.addItem(nav_i14);
-	
+
 
 
 	Menu::console.setMenu(&navigationMenu);
 	Menu::console.show();
+
 	
 }

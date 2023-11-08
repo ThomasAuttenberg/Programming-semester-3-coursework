@@ -28,17 +28,11 @@ Object::Object(const Object& other) {
 
 
 Object& Object::operator=(const Object& other) {
-	if (size != other.size) {
-		if(destructor != nullptr) destructor(container);
-		container = nullptr;
-		container = malloc(other.size);
-
-		if (container == nullptr)
-			throw "Memory allocation error";
-
-		size = other.size;
-
-	}
+	if(destructor != nullptr) destructor(container);
+	container = malloc(other.size);
+	if (container == nullptr)
+		throw "Memory allocation error";
+	size = other.size;
 	memcpy(container, other.container, size);
 	typeIdentifier = other.typeIdentifier;
 	_typeName = other._typeName;

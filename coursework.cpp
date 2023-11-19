@@ -368,8 +368,8 @@ int main()
 		}
 
 		while (true) {
-			int type;
-			dumpStream.read((char*)&type, sizeof(int));
+			size_t type;
+			dumpStream.read((char*)&type, sizeof(size_t));
 			if (dumpStream.eof()) break;
 			if (type == Float::identifier) {
 				Float* obj = new Float;
